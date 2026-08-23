@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 // كل طلب هنا خط أنابيب من عدة نداءات لا نداءً واحداً، فالسقف منخفض
 const allowed = createLimiter({ max: 8 });
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 
 // المهل لكل وكيل حسب ثقله الفعلي، مو رقم واحد للجميع.
 //

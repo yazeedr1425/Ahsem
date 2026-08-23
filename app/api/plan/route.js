@@ -27,7 +27,7 @@ export const dynamic = "force-dynamic";
 const allowed = createLimiter({ max: 6 });
 
 // نفس نموذج /api/decide — مزوّد واحد لكل التطبيق
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 const GEMINI_TIMEOUT_MS = 30000;
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;

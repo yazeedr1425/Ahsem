@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 // عشرين تكفي خمسة قرارات في الدقيقة — أكثر من أي استعمال حقيقي
 const allowed = createLimiter({ max: 20 });
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 
 // مخرَج الدورة أصغر من الإطار بكثير (رد سطرين وتعديلان على الأكثر)،
 // فالمهلة أضيق. والانتظار هنا أثقل نفسياً: المستخدم أرسل رسالة وينتظر

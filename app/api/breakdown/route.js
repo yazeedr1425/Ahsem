@@ -5,7 +5,7 @@ import { normalizeArabic } from "@/lib/voice/match";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 const TIMEOUT_MS = 25000;
 const MAX_LABEL_LENGTH = 60;
 const MIN_QUESTIONS = 3;

@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 // والحدّ قبل التحقق من الهوية حتى لا يصير التحقق نفسه هدفاً للإغراق
 const allowed = createLimiter({ max: 6 });
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 const TIMEOUT_MS = 20000;
 
 // نقرأ أكثر مما نحتاج للعرض: النمط يبان من العدد، وسطرين ما يكفيان

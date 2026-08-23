@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 // المساعد تفاعلي: المستخدم يكتب ويعيد، فالسقف أوسع من غيره
 const allowed = createLimiter({ max: 20 });
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 const TIMEOUT_MS = 12000;
 
 // وكيل محادثة، مش مطابقة كلمات. المستخدم يتكلم طبيعي —

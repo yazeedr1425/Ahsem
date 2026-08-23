@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
 // يولّد مخرَجاً أكبر، وأوسع من `plan` لأنه ما يمس حصص خدمات أخرى
 const allowed = createLimiter({ max: 8 });
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 
 // مقيس لا مفترض (‎bench-frame.mjs‎): الوسيط ‎٣٠٦٧ms‎ والأقصى المرصود
 // ‎٤٢٧٧ms‎ على زوج سهل بتفكير مطفأ. الأزواج المجرّدة أبطأ، والمهلة
@@ -34,6 +34,11 @@ const GEMINI_TIMEOUT_MS = 20000;
 //
 // `thinkingLevel` جُرِّب ورجّع ‎400‎ («not supported for this model»)،
 // و`gemini-2.5-flash-lite` رجّع ‎404‎ (سُحب) — فما بقي إلا هذا.
+//
+// ثم سُحب `gemini-2.5-flash` نفسه: يبقى مدرَجاً في `models.list` لكن
+// `generateContent` يرجّع ‎404‎ «no longer available to new users». وهذه
+// ثالث مرة يُسحب موديل من تحت المشروع، والاسم مكتوب بيدنا في عشرة
+// مسارات — فالسحب القادم يعطّل التطبيق كله مرة أخرى حتى تُبدَّل العشرة.
 const THINKING = { thinkingBudget: 0 };
 
 const MAX_LABEL_LENGTH = 60;

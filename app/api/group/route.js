@@ -5,7 +5,7 @@ import { normalizeArabic } from "@/lib/voice/match";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 const TIMEOUT_MS = 20000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // share_code من gen_random_bytes(6) → ١٢ خانة hex

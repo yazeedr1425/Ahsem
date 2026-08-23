@@ -18,7 +18,7 @@ const MAX_LABEL_LENGTH = 60;
 const MAX_DEPTH_TEXT = 160;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.6-flash";
 const GEMINI_TIMEOUT_MS = 15000;
 
 const SYSTEM_INSTRUCTION =
