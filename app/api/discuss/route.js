@@ -210,7 +210,7 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return fail(400, "ما قدرنا نقرأ الطلب — لازم يكون JSON صالح.");
+    return fail(400, "تعذّرت قراءة الطلب — يلزم أن يكون JSON صالحًا.");
   }
 
   const parsed = validate(body);
@@ -229,11 +229,11 @@ export async function POST(request) {
       return fail(503, "محرك النقاش غير مهيأ — GEMINI_API_KEY مفقود.");
     }
     if (err.name === "AbortError") {
-      return fail(504, "تأخر الرد، جرب مرة ثانية.");
+      return fail(504, "تأخّر الرد. أعد المحاولة.");
     }
     // لا ردّ بديل: جملة عامة من قالب تتظاهر بأنها جواب على اعتراضٍ
     // بعينه أسوأ من خطأ صريح — والمستخدم هنا ينتظر حجة لا كلاماً
-    return fail(502, "ما قدرنا نرد عليك الحين، جرب مرة ثانية.");
+    return fail(502, "تعذّر الرد حاليًا. أعد المحاولة.");
   }
 
   return Response.json({ ok: true, ...answer, model: MODEL });

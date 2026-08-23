@@ -199,7 +199,7 @@ export async function GET(request) {
   const code = new URL(request.url).searchParams.get("code") ?? "";
   if (!CODE.test(code)) return fail(400, "كود غير صالح.");
 
-  if (!allowed(clientIp(request), 20)) return fail(429, "محاولات كثيرة — انتظر شوي.");
+  if (!allowed(clientIp(request), 20)) return fail(429, "محاولات متكررة. أمهل قليلًا.");
 
   const admin = supabaseAdmin();
   const decision = await fetchGroupDecision(admin, { share_code: code });
@@ -250,7 +250,7 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return fail(400, "ما قدرنا نقرأ الطلب.");
+    return fail(400, "تعذّرت قراءة الطلب.");
   }
 
   const decisionId = typeof body?.decisionId === "string" ? body.decisionId : "";
@@ -269,7 +269,7 @@ export async function POST(request) {
   const decision = await fetchGroupDecision(admin, { id: decisionId });
   if (!decision) return fail(404, "ما لقينا هذا القرار.");
   if (decision.user_id !== auth.user.id) {
-    return fail(403, "بس اللي أنشأ القرار يقفله.");
+    return fail(403, "لا يقفل القرار إلا منشئه.");
   }
   if (decision.status === "closed") return fail(409, "مقفل من قبل.");
 
@@ -290,9 +290,9 @@ export async function POST(request) {
   } catch (err) {
     console.error("[api/group] close failed:", err);
     if (err.code === "NO_API_KEY") return fail(503, "المعلّق غير مهيأ.");
-    if (err.name === "AbortError") return fail(504, "المعلّق تأخر — جرب مرة ثانية.");
-    if (err.status === 503) return fail(503, "المعلّق مزدحم — انتظر شوي وجرب.");
-    return fail(502, "ما قدرنا نجهز الإعلان — جرب مرة ثانية.");
+    if (err.name === "AbortError") return fail(504, "تأخّر المعلّق عن الرد. أعد المحاولة.");
+    if (err.status === 503) return fail(503, "المعلّق مزدحم. أمهله قليلًا ثم أعد المحاولة.");
+    return fail(502, "تعذّر تجهيز الإعلان. أعد المحاولة.");
   }
 
   // الإقفال بعد نجاح الإعلان: لو انعكس الترتيب صار عندنا قرار مقفل
@@ -305,7 +305,7 @@ export async function POST(request) {
 
   if (updateError) {
     console.error("[api/group] update failed:", updateError);
-    return fail(502, "ما قدرنا نقفل التصويت — جرب مرة ثانية.");
+    return fail(502, "تعذّر إقفال التصويت. أعد المحاولة.");
   }
 
   // قيدٌ في سجل الفائزين، بعد الإقفال لا قبله: التصويت أُقفل فعلاً

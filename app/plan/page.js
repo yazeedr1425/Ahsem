@@ -143,7 +143,7 @@ export default function PlanPage() {
       } catch (err) {
         if (err.name !== "AbortError") {
           console.error("[plan] request failed:", err);
-          setError("ما قدرنا نوصل للخادم — تأكد من اتصالك.");
+          setError("تعذّر الوصول إلى الخادم. تحقق من اتصالك.");
         }
       } finally {
         setLoading(false);

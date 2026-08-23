@@ -148,7 +148,7 @@ function readRefine(refine) {
 // «كبسة/برجر» يتكرر كثيراً، والإطار أغلى نداء في المسار. الرقم يرتفع
 // مع أي تغيير في البرومبت أو العقد — وإلا تُخدَم إدخالات بشكل قديم.
 // والفرز في المفتاح يخلي ترتيب الخيارات لا يصنع إدخالاً جديداً
-const VERSION = "v5-refine";
+const VERSION = "v6-msa";
 const TTL_MS = 24 * 60 * 60 * 1000;
 const MAX_ENTRIES = 300;
 const store = new Map();
@@ -301,7 +301,7 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return fail(400, "ما قدرنا نقرأ الطلب — لازم يكون JSON صالح.");
+    return fail(400, "تعذّرت قراءة الطلب — يلزم أن يكون JSON صالحًا.");
   }
 
   const parsed = validate(body);
@@ -358,11 +358,11 @@ export async function POST(request) {
       return fail(503, "محرك القرار غير مهيأ — GEMINI_API_KEY مفقود.");
     }
     if (err.name === "AbortError") {
-      return fail(504, "قراءة خياراتك تأخرت، جرب مرة ثانية.");
+      return fail(504, "تأخّرت قراءة الخيارات. أعد المحاولة.");
     }
     // مخرَج مرفوض من `shapeFrame` أو خطأ من الـ API نفسه. لا قالب
     // بديل: سؤال من قالب يتنكّر كتوليد أسوأ من خطأ صريح
-    return fail(502, "ما قدرنا نقرأ خياراتك الحين، جرب مرة ثانية.");
+    return fail(502, "تعذّرت قراءة الخيارات حاليًا. أعد المحاولة.");
   }
 
   writeCache(key, frame);

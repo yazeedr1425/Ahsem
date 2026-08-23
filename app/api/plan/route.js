@@ -234,7 +234,7 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return fail(400, "ما قدرنا نقرأ الطلب — لازم يكون JSON صالح.");
+    return fail(400, "تعذّرت قراءة الطلب — يلزم أن يكون JSON صالحًا.");
   }
 
   const parsed = validate(body);
@@ -278,7 +278,7 @@ export async function POST(request) {
       return fail(503, "خدمة الأماكن غير مهيأة — GOOGLE_MAPS_API_KEY مفقود.");
     }
     if (err.name === "AbortError") {
-      return fail(504, "خدمة الأماكن تأخرت بالرد، جرب مرة ثانية.");
+      return fail(504, "تأخّرت خدمة الأماكن عن الرد. أعد المحاولة.");
     }
     // 403 من Places يعني إعداد المفتاح غالباً لا عطلاً: إما قيود
     // التطبيق على "HTTP referrers" (والنداء من الخادم بلا referer)،
@@ -286,10 +286,10 @@ export async function POST(request) {
     if (err.status === 403) {
       return fail(
         503,
-        "مفتاح الخرائط مرفوض — تأكد أن قيود التطبيق None (مو HTTP referrers) وأن Places API (New) و Routes API مفعّلتان.",
+        "مفتاح الخرائط مرفوض — تأكد أن قيود التطبيق None (لا HTTP referrers) وأن Places API (New) و Routes API مفعّلتان.",
       );
     }
-    return fail(502, "ما قدرنا نجيب أماكن قريبة منك الحين.");
+    return fail(502, "تعذّر جلب أماكن قريبة منك حاليًا.");
   }
 
   if (candidates.length === 0) {
@@ -335,18 +335,18 @@ export async function POST(request) {
       return fail(503, "مولّد الخطة غير مهيأ — GEMINI_API_KEY مفقود.");
     }
     if (err.name === "AbortError") {
-      return fail(504, "مولّد الخطة تأخر بالرد، جرب مرة ثانية.");
+      return fail(504, "تأخّر مولّد الخطة عن الرد. أعد المحاولة.");
     }
     if (err.status === 429) {
-      return fail(502, "الضغط عالي على مولّد الخطة — انتظر شوي وجرب.");
+      return fail(502, "الضغط مرتفع على مولّد الخطة. أمهله قليلًا ثم أعد المحاولة.");
     }
-    return fail(502, "ما قدرنا نبني الخطة الحين، جرب مرة ثانية.");
+    return fail(502, "تعذّر بناء الخطة حاليًا. أعد المحاولة.");
   }
 
   const result = parsePlan(raw, candidates);
   if (!result.ok) {
     console.error(`[api/plan] parse failed (${result.reason}):`, result.sample);
-    return fail(502, "رد المولّد جاء بشكل غير متوقع — جرب مرة ثانية.");
+    return fail(502, "ورد رد غير متوقع من المولّد. أعد المحاولة.");
   }
 
   const { plan, dropped } = result;

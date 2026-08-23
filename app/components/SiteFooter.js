@@ -19,7 +19,7 @@ export default function SiteFooter() {
             الأسعار
           </Link>
           <Link href="/how" className="transition-colors hover:text-ink">
-            كيف يعمل
+            منهجية التقييم
           </Link>
           <Link href="/#history" className="transition-colors hover:text-ink">
             سجل القرارات

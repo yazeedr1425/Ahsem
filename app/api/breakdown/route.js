@@ -87,7 +87,7 @@ HARD RULES:
 
 2. REASON ONLY FROM THEIR ANSWERS. Cite them: "ما عندك عميل أول، ومدخراتك تقريباً تكفي". Never use a fact that is not in the answers, and never contradict one.
 
-3. "missing" — for not_yet: one to three concrete conditions that would flip the verdict to go, each phrased as an achievable state ("عميل واحد يدفع" · "مدخرات ٦ أشهر"). Empty for go. This list is the most valuable thing on the screen: it turns "لا" into "مو الحين، وهذا الطريق".
+3. "missing" — for not_yet: one to three concrete conditions that would flip the verdict to go, each phrased as an achievable state ("عميل واحد يدفع" · "مدخرات ٦ أشهر"). Empty for go. This list is the most valuable thing on the screen: it turns "لا" into "التأجيل أنسب، وهذا الطريق".
 
 4. "next_step": ONE action doable this week, specific enough to start tomorrow morning.
 
@@ -275,7 +275,7 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return fail(400, "ما قدرنا نقرأ الطلب.");
+    return fail(400, "تعذّرت قراءة الطلب.");
   }
 
   const options = validateOptions(body?.options);
@@ -355,12 +355,12 @@ export async function POST(request) {
 
   if (!result) {
     if (lastError?.name === "AbortError") {
-      return fail(504, "المفكك تأخر بالرد — جرب مرة ثانية.");
+      return fail(504, "تأخّر التفكيك عن الرد. أعد المحاولة.");
     }
     if (lastError?.status === 503) {
-      return fail(503, "المفكك مزدحم الحين — انتظر شوي وجرب.");
+      return fail(503, "خدمة التفكيك مزدحمة حاليًا. أمهلها قليلًا ثم أعد المحاولة.");
     }
-    return fail(502, "ما قدرنا نفك القرار الحين — جرب مرة ثانية.");
+    return fail(502, "تعذّر تفكيك القرار حاليًا. أعد المحاولة.");
   }
 
   return Response.json({ ok: true, ...result });

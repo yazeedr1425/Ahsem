@@ -72,7 +72,7 @@ export default function AuthPanel({ mode = "signin" }) {
       });
       const payload = await res.json().catch(() => null);
       if (!res.ok || !payload?.ok) {
-        setError(payload?.error ?? "ما قدرنا نرسل الرابط — جرب مرة ثانية.");
+        setError(payload?.error ?? "تعذّر إرسال الرابط. أعد المحاولة.");
         return;
       }
       setNotice(
@@ -187,14 +187,14 @@ export default function AuthPanel({ mode = "signin" }) {
         <div className="flex w-full max-w-md flex-col gap-7">
           <div className="flex flex-col gap-3">
             <h1 className="text-4xl font-bold leading-tight sm:text-[44px]">
-              {isSignUp ? "أنشئ حسابك." : "أهلًا مرة ثانية."}
+              {isSignUp ? "أنشئ حسابك." : "أهلًا بعودتك."}
             </h1>
             <p className="leading-relaxed" style={{ color: "#6b6257" }}>
               {isSignUp
-                ? "عشان نحفظ قراراتك، ونتعلم من عاداتك مع الوقت."
+                ? "لحفظ قراراتك، واستخلاص أنماطك منها مع الوقت."
                 : usePasswordForm
-                  ? "ادخل بإيميلك وكلمة مرورك."
-                  : "اكتب إيميلك ونرسل لك رابط دخول لمرة واحدة. بدون كلمة مرور تحتاج تتذكرها."}
+                  ? "أدخل بريدك وكلمة مرورك."
+                  : "أدخل بريدك ليصلك رابط دخول لمرة واحدة — دون كلمة مرور تحتاج إلى تذكّرها."}
             </p>
           </div>
 

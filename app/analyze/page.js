@@ -148,7 +148,7 @@ export default function AnalyzePage() {
       // أخطاء ما قبل البث ترجع JSON عادي، مو تدفقاً
       if (!res.ok || !res.body) {
         const body = await res.json().catch(() => null);
-        setError(body?.error ?? "ما قدرنا نبدأ التحليل.");
+        setError(body?.error ?? "تعذّر بدء التحليل.");
         return;
       }
 
@@ -253,7 +253,7 @@ export default function AnalyzePage() {
             disabled={running}
             rows={3}
             maxLength={2000}
-            placeholder="مثال: الفرع الحالي يحقق ٨٠ ألف شهرياً بهامش ٢٢٪، وعندي طاقم جاهز بس ما عندي خبرة في جدة."
+            placeholder="مثال: الفرع الحالي يحقق ٨٠ ألف شهريًا بهامش ٢٢٪، ولديّ طاقم جاهز، غير أن خبرتي بسوق جدة محدودة."
             className="mt-3 w-full rounded-2xl border border-line bg-card-sunken p-4 leading-relaxed outline-none transition-colors placeholder:text-muted-soft focus:border-ink disabled:opacity-60"
           />
 

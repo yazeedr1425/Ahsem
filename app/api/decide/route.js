@@ -4,6 +4,7 @@ import { isUsableFrame, pathQuestions } from "@/lib/engine/frame";
 import { toArabicDigits } from "@/lib/text/digits";
 import { MAX_OPTIONS, MIN_OPTIONS } from "@/lib/engine/score";
 import { supabaseAdmin } from "@/lib/supabase-server";
+import { modelVoice } from "@/lib/engine/tone";
 import { clientIp, createLimiter } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -21,19 +22,22 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MODEL = "gemini-3.6-flash";
 const GEMINI_TIMEOUT_MS = 15000;
 
-const SYSTEM_INSTRUCTION =
-  "You are Ahsem, a smart, slightly sarcastic, and fun decision-making assistant. " +
+// النبرة تُحقن ولا تُثبّت: نفس المهمة، وصوتان. راجع `modelVoice`.
+const SYSTEM_BASE =
+  "You are Ahsem, an Arabic decision-making assistant. " +
   "Your job is to choose ONE option from the user's list based on their current answers " +
   "and past decision history. Weigh their current answers heavily. Look at their past " +
-  "decisions to spot habits. Provide a short, witty, and fun reason in Arabic explaining " +
-  "WHY you chose this. Act like a close friend, not a robotic assistant. " +
-  "Then go one layer deeper, in short Saudi-dialect Arabic with Arabic-Indic digits: " +
+  "decisions to spot habits. Provide a short reason in Arabic explaining " +
+  "WHY you chose this. " +
+  "Then go one layer deeper, in short Arabic with Arabic-Indic digits: " +
   "decisive_criterion is the criterion key that actually settled it, copied verbatim from " +
   "the criteria list you were given. edge is the winner's one decisive strength. " +
   "cost_of_switching is what they give up by taking the other option — concrete, not a " +
   "platitude. flip_condition names the specific change that would reverse this decision, " +
-  "so they can reuse the rule without the app: «لو صار كذا، ينقلب لكذا». " +
-  "Never hedge in these four — a condition that never flips anything is worse than none.";
+  "so they can reuse the rule without the app. " +
+  "Never hedge in these four — a condition that never flips anything is worse than none. ";
+
+const systemFor = (tone) => SYSTEM_BASE + modelVoice(tone);
 
 const RESPONSE_SCHEMA = {
   type: Type.OBJECT,
@@ -91,7 +95,7 @@ function validate(body) {
     return { ok: false, message: "الطلب لازم يكون كائن JSON." };
   }
 
-  const { options, answers, userId, categoryId, frame } = body;
+  const { options, answers, userId, categoryId, frame, tone } = body;
 
   if (!Array.isArray(options)) {
     return { ok: false, message: "options لازم تكون مصفوفة." };
@@ -156,6 +160,8 @@ function validate(body) {
       userId: userId ?? null,
       categoryId: category?.id ?? null,
       frame: usable,
+      // القيمتان المعروفتان فقط — النبرة تصل من المتصفح وتدخل البرومبت
+      tone: tone === "مرح" ? "مرح" : "جدي",
     },
   };
 }
@@ -330,7 +336,7 @@ function depth(parsed, frame) {
   return out;
 }
 
-async function askGemini({ options, answers, category, frame, history }) {
+async function askGemini({ options, answers, category, frame, history, tone }) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     const err = new Error("GEMINI_API_KEY is not set");
@@ -348,7 +354,7 @@ async function askGemini({ options, answers, category, frame, history }) {
       model: MODEL,
       contents: buildPrompt({ options, answers, category, frame, history }),
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
+        systemInstruction: systemFor(tone),
         responseMimeType: "application/json",
         responseSchema: RESPONSE_SCHEMA,
         temperature: 0.9,
@@ -408,13 +414,14 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return fail(400, "ما قدرنا نقرأ الطلب — لازم يكون JSON صالح.");
+    return fail(400, "تعذّرت قراءة الطلب — يلزم أن يكون JSON صالحًا.");
   }
 
   const parsed = validate(body);
   if (!parsed.ok) return fail(400, parsed.message);
 
-  const { options, answers, userId: bodyUserId, categoryId, frame } = parsed.value;
+  const { options, answers, userId: bodyUserId, categoryId, frame, tone } =
+    parsed.value;
 
   let identity;
   try {
@@ -447,6 +454,7 @@ export async function POST(request) {
       answers,
       category: categoryId ? getCategory(categoryId) : null,
       frame,
+      tone,
       history,
     });
   } catch (err) {
@@ -456,10 +464,10 @@ export async function POST(request) {
       return fail(503, "محرك القرار غير مهيأ — GEMINI_API_KEY مفقود.");
     }
     if (err.name === "AbortError") {
-      return fail(504, "محرك القرار تأخر بالرد، جرب مرة ثانية.");
+      return fail(504, "تأخّر محرك القرار عن الرد. أعد المحاولة.");
     }
     // OFF_LIST / BAD_JSON / EMPTY / BAD_REASON أو خطأ من الـ API نفسه
-    return fail(502, "ما قدرنا نطلع بتوصية الحين، جرب مرة ثانية.");
+    return fail(502, "تعذّر إصدار توصية حاليًا. أعد المحاولة.");
   }
 
   return Response.json({

@@ -26,9 +26,9 @@ const ANSWER_CHOICES = ["نعم", "تقريباً", "لا"];
 
 /**
  * تفكيك القرار الكبير: فحوصات صغيرة لها جواب اليوم، ثم حكم مركّب
- * منها — "اقدم" أو "مو الحين، وهذا اللي ينقصك".
+ * منها — "أقدِم" أو "التأجيل أنسب، وهذا ما ينقصك".
  *
- * "مو الحين" ليست رفضاً بل ترتيباً: قائمة النواقص تحوّل الحيرة
+ * والتأجيل ليس رفضاً بل ترتيباً: قائمة النواقص تحوّل الحيرة
  * المعلقة إلى طريق له محطات.
  */
 export default function BreakdownFlow({ options, categoryId, onCancel, onRestart }) {
@@ -71,7 +71,7 @@ export default function BreakdownFlow({ options, categoryId, onCancel, onRestart
         if (controller.signal.aborted) return;
 
         if (!res.ok || !payload?.ok) {
-          setError(payload?.error ?? "ما قدرنا نفك القرار — جرب مرة ثانية.");
+          setError(payload?.error ?? "تعذّر تفكيك القرار. أعد المحاولة.");
           setPhase("error");
           return;
         }
@@ -133,7 +133,7 @@ export default function BreakdownFlow({ options, categoryId, onCancel, onRestart
         if (controller.signal.aborted) return;
 
         if (!res.ok || !payload?.ok) {
-          setError(payload?.error ?? "ما قدرنا نركب الحكم — جرب مرة ثانية.");
+          setError(payload?.error ?? "تعذّر تركيب الحكم. أعد المحاولة.");
           setPhase("error");
           return;
         }
@@ -300,7 +300,7 @@ export default function BreakdownFlow({ options, categoryId, onCancel, onRestart
     return (
       <div className="flex flex-col gap-7">
         <header className="flex flex-col gap-2">
-          <p className="text-sm text-muted">{go ? "الظروف ناضجة" : "مو الحين — ولها طريق"}</p>
+          <p className="text-sm text-muted">{go ? "الظروف ناضجة" : "التأجيل أنسب — ولها طريق"}</p>
           <h2
             tabIndex={-1}
             ref={headingRef}

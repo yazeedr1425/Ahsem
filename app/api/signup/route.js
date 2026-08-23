@@ -118,7 +118,7 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return fail(400, "ما قدرنا نقرأ الطلب.");
+    return fail(400, "تعذّرت قراءة الطلب.");
   }
 
   const parsed = validate(body);
@@ -129,7 +129,7 @@ export async function POST(request) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
   if (!allowed(ip)) {
-    return fail(429, "محاولات كثيرة — انتظر دقيقة وجرب.");
+    return fail(429, "محاولات متكررة. أمهل دقيقة ثم أعد المحاولة.");
   }
 
   // ١) إنشاء المستخدم + توليد رابط التأكيد، بلا إرسال.
@@ -146,7 +146,7 @@ export async function POST(request) {
     });
   } catch (err) {
     console.error("[api/signup] generateLink threw:", err);
-    return fail(502, "تعذر إنشاء الحساب الحين، جرب مرة ثانية.");
+    return fail(502, "تعذّر إنشاء الحساب حاليًا. أعد المحاولة.");
   }
 
   if (link.error) {
@@ -155,10 +155,10 @@ export async function POST(request) {
       return fail(409, "هذا الإيميل مسجّل من قبل — سجّل دخولك.");
     }
     if (code === "weak_password") {
-      return fail(400, "كلمة المرور ضعيفة — جرب أطول أو أعقد.");
+      return fail(400, "كلمة المرور ضعيفة. اجعلها أطول أو أكثر تعقيدًا.");
     }
     console.error("[api/signup] generateLink failed:", link.error);
-    return fail(502, "تعذر إنشاء الحساب الحين، جرب مرة ثانية.");
+    return fail(502, "تعذّر إنشاء الحساب حاليًا. أعد المحاولة.");
   }
 
   const userId = link.data?.user?.id;
@@ -189,9 +189,9 @@ export async function POST(request) {
       return fail(503, "الإرسال غير مهيأ — MAILTRAP_API_TOKEN مفقود.");
     }
     if (err.name === "AbortError") {
-      return fail(504, "الإرسال تأخر — جرب مرة ثانية.");
+      return fail(504, "تأخّر الإرسال. أعد المحاولة.");
     }
-    return fail(502, "ما قدرنا نرسل رابط التأكيد — جرب مرة ثانية.");
+    return fail(502, "تعذّر إرسال رابط التأكيد. أعد المحاولة.");
   }
 
   return Response.json({ ok: true });

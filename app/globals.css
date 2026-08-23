@@ -575,6 +575,60 @@ h6 {
 }
 
 /* ---------------------------------------------------------------
+   عرض الهيرو — يحسم نفسه مرة واحدة أمام الزائر: تظهر الخيارات،
+   يمتلئ واحد منها حبراً، ثم يطلع الحكم. ليست زينة مضافة: الشاشة
+   الساكنة كانت تعرض حكماً بـ«سوشي» وثلاثة خيارات كلها غير مختارة،
+   فالامتلاء يغلق تناقضاً كان قائماً قبل الحركة.
+
+   الحالة الأساسية لكل عنصر هي حالته **الأخيرة**، والإطار الأول
+   وحده يصف البداية، مع ‎backwards‎ ليمسك الحالةَ الأولى أثناء
+   التأخير. لذلك قاعدة ‎animation: none‎ عند تعطيل الحركة تترك العرض
+   مكتملاً — لا نصفَ مرسوم ولا شفافاً — بلا استثناء ثانٍ نكتبه.
+
+   الحركة على الغلاف لا على البطاقة، لأن ‎.floaty‎ تملك ‎transform‎
+   ولو تشاركتاه لأكلت إحداهما الأخرى.
+   --------------------------------------------------------------- */
+@keyframes demo-chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* الامتلاء وحده: نفس انتقال ‎Choice‎ حين يُختار خيار حقيقي */
+@keyframes demo-pick {
+  from {
+    background-color: transparent;
+    border-color: var(--line-strong);
+    color: var(--foreground);
+  }
+}
+
+@keyframes demo-verdict-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+}
+
+.demo-chip {
+  animation: demo-chip-in 520ms ease-out backwards;
+  animation-delay: var(--at, 0ms);
+}
+
+.demo-chip-picked {
+  animation:
+    demo-chip-in 520ms ease-out backwards,
+    demo-pick 460ms ease-out backwards;
+  animation-delay: var(--at, 0ms), var(--pick-at, 1400ms);
+}
+
+.demo-verdict {
+  animation: demo-verdict-in 620ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: var(--at, 1800ms);
+}
+
+/* ---------------------------------------------------------------
    مقبض المبارزة — مدى بخمس محطات بين الخيارين.
 
    الوسوم البائدة (‎::-webkit-slider-thumb‎ وأخواتها) تُكتب بأيدينا لأن

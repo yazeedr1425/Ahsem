@@ -339,7 +339,7 @@ export default function Home() {
     if (!result.ok) {
       setGroupBusy(false);
       if (result.reason === "unauthenticated") router.push("/login");
-      else setApiError(result.message ?? "ما قدرنا ننشئ التصويت.");
+      else setApiError(result.message ?? "تعذّر إنشاء التصويت.");
       return;
     }
     router.push(`/vote/${result.code}`);
@@ -445,6 +445,9 @@ export default function Home() {
             // الإطار يحمل الأسئلة والمعايير بنصوصها، فيصف البرومبت
             // إجابات المستخدم بكلامه بدل مفاتيح مولّدة
             frame: override?.frame ?? frame,
+            // النبرة كانت تُطبَّق على غلاف الحكم في Result وحده، فيقرأ
+            // مَن اختار «جدي» صياغةً رسمية حول نصٍّ وُلِّد مرحاً
+            tone,
           }),
         });
 
@@ -466,7 +469,7 @@ export default function Home() {
         }
       } catch (err) {
         console.error("[decide] request failed:", err);
-        setApiError("ما قدرنا نوصل للمحرك — تأكد من اتصالك.");
+        setApiError("تعذّر الوصول إلى المحرك. تحقق من اتصالك.");
       }
 
       setStep("result");
@@ -499,7 +502,7 @@ export default function Home() {
         }
       }
     },
-    [filledOptions, answers, frame, decisionCategory, weights, accessToken],
+    [filledOptions, answers, frame, decisionCategory, weights, accessToken, tone],
   );
 
   // المحادثة الصوتية تعطينا كل شي دفعة واحدة — بما فيه التقييمات.

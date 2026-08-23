@@ -58,7 +58,7 @@ HARD RULES:
    It must not be a synonym, a subtype, or a rewording of anything already on their list. "شاورما" when they wrote "شاورما دجاج" is the same thing. If the only thing you can think of is a cousin of an existing option, return nothing.
 
 4. THEIR WORDS, NOT DICTIONARY ARABIC.
-   Match the register they typed in. Someone who wrote "أقعد أشرب شاهي" gets "أطلع أمشي شوي", not "ممارسة رياضة المشي".
+   Match the register they typed in — this rule cuts both ways. Someone who wrote "أقعد أشرب شاهي" gets "أطلع أمشي شوي", not "ممارسة رياضة المشي". And someone who wrote "الإعلانات الممولة" gets "التسويق بالمحتوى", never "إعلانات ممولة خفيفة".
 
 5. TWO TO FOUR WORDS.
    It goes on a small chip next to their options.
@@ -100,7 +100,7 @@ const RESPONSE_SCHEMA = {
 // ---------- كاش ----------
 // يُنادى أثناء الكتابة، فالتكرار وارد جداً: نفس الزوج من نفس الشخص
 // وهو يعدّل خياراً ثالثاً. الرقم يرتفع مع أي تغيير في البرومبت.
-const VERSION = "v2-five-moves";
+const VERSION = "v3-register";
 const TTL_MS = 12 * 60 * 60 * 1000;
 const MAX_ENTRIES = 500;
 const store = new Map();
@@ -260,9 +260,9 @@ export async function POST(request) {
     const response = await ai.models.generateContent({
       model: MODEL,
       contents:
-        "الخيارات اللي كتبها:\n" +
+        "الخيارات التي كتبها:\n" +
         options.map((o, i) => `${i + 1}. ${o}`).join("\n") +
-        "\n\nوش الخيار اللي ما فكر فيه؟ أرجع كائن JSON فقط.",
+        "\n\nما الخيار الذي لم يخطر له؟ أعِد كائن JSON فقط.",
       config: {
         systemInstruction: SYSTEM_PROMPT,
         responseMimeType: "application/json",

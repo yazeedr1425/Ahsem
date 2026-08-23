@@ -56,9 +56,9 @@ function validate(body) {
   const statement =
     typeof body?.statement === "string" ? body.statement.trim() : "";
 
-  if (!statement) return { ok: false, message: "اكتب القرار اللي تبي تحلله." };
+  if (!statement) return { ok: false, message: "اكتب القرار المراد تحليله." };
   if (statement.length > MAX_STATEMENT)
-    return { ok: false, message: "وصف القرار طويل — اختصره شوي." };
+    return { ok: false, message: "وصف القرار طويل. اختصره قليلًا." };
 
   const context =
     typeof body?.context === "string"
@@ -442,7 +442,7 @@ export async function POST(request) {
 
           if (error) {
             console.error("[api/analyze] save failed:", error);
-            saveError = "التحليل جاهز لكن ما انحفظ في سجلك.";
+            saveError = "التحليل جاهز، غير أنه لم يُحفظ في سجلّك.";
           } else {
             saved = data.id;
           }
@@ -453,7 +453,7 @@ export async function POST(request) {
           result,
           analysisId: saved,
           saveError,
-          savedHint: userId ? null : "سجّل دخولك عشان نحفظ تحليلاتك.",
+          savedHint: userId ? null : "سجّل دخولك ليُحفظ تحليلك.",
         });
       } catch (err) {
         console.error("[api/analyze] stream failed:", err);

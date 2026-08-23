@@ -14,7 +14,7 @@ import VoiceShortcuts from "./VoiceShortcuts";
 // ‎/#examples‎ باقية كذلك رغم أن لا شيء يشير إليها الآن — الرابط
 // المحفوظ عند أحدهم لازم يظل يشتغل.
 const LINKS = [
-  { href: "/how", label: "كيف يعمل" },
+  { href: "/how", label: "منهجية التقييم" },
   { href: "/plan", label: "خطة اليوم" },
   { href: "/analyze", label: "تحليل المخاطر" },
   { href: "/pricing", label: "الأسعار" },

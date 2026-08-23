@@ -278,7 +278,7 @@ export async function POST(request) {
   } catch (err) {
     console.error("[api/assist] failed:", err);
     if (err.name === "AbortError") return fail(504, "تأخرت بالرد، عيد عليّ؟");
-    return fail(502, "ما قدرت أفهمك الحين، عيد عليّ؟");
+    return fail(502, "تعذّر فهم ما قلته. أعد المحاولة من فضلك.");
   } finally {
     clearTimeout(timeout);
   }

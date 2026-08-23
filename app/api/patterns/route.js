@@ -136,16 +136,16 @@ export async function GET(request) {
     });
 
     const reading = shape(JSON.parse(response.text ?? "{}"));
-    if (!reading) return fail(502, "ما قدرنا نقرأ أنماطك الحين، جرب مرة ثانية.");
+    if (!reading) return fail(502, "تعذّرت قراءة أنماطك حاليًا. أعد المحاولة.");
 
     return Response.json({ ok: true, ready: true, reading, stats });
   } catch (err) {
     console.error("[api/patterns] failed:", err);
-    if (err.name === "AbortError") return fail(504, "القراءة تأخرت، جرب مرة ثانية.");
+    if (err.name === "AbortError") return fail(504, "تأخّرت القراءة. أعد المحاولة.");
     if (err.status === 503) {
-      return fail(503, "المحرك مزدحم الحين — انتظر شوي وجرب مرة ثانية.");
+      return fail(503, "المحرك مزدحم حاليًا. أمهله قليلًا ثم أعد المحاولة.");
     }
-    return fail(502, "ما قدرنا نقرأ أنماطك الحين، جرب مرة ثانية.");
+    return fail(502, "تعذّرت قراءة أنماطك حاليًا. أعد المحاولة.");
   } finally {
     clearTimeout(timer);
   }

@@ -25,7 +25,6 @@ import {
   ShoppingBag,
   TriangleAlert,
   Users,
-  Utensils,
 } from "./icons";
 
 // أمثلة تعبّي الخيارين بضغطة — مدخل مختصر لا ميزة تُعرض.
@@ -33,24 +32,19 @@ import {
 // الحقل الذي حذفناه من الشاشة.
 const EXAMPLES = [
   {
-    label: "أطلب ولا أطبخ؟",
-    icon: Utensils,
-    options: ["أطلب من مطعم", "أطبخ بالبيت"],
-  },
-  {
-    label: "أشتري أو أنتظر؟",
-    icon: ShoppingBag,
-    options: ["أشتري الآن", "أنتظر التخفيض"],
-  },
-  {
-    label: "أكمّل أو أغيّر؟",
-    icon: Briefcase,
-    options: ["أكمّل بمكاني", "أغيّر مساري"],
-  },
-  {
-    label: "أفكّر أو أبدأ؟",
+    label: "أي الإطارين أنسب لمشروعك القادم؟",
     icon: Brain,
-    options: ["أفكّر أكثر", "أبدأ الحين"],
+    options: ["Next.js", "Remix"],
+  },
+  {
+    label: "أين توجّه الميزانية التسويقية؟",
+    icon: ShoppingBag,
+    options: ["الإعلانات الممولة", "التسويق بالمحتوى"],
+  },
+  {
+    label: "ما الخيار الأنسب لمرحلتك القادمة؟",
+    icon: Briefcase,
+    options: ["برنامج تدريبي مكثف", "مشروع خاص"],
   },
 ];
 
@@ -62,20 +56,20 @@ const ORDINALS = ["١", "٢", "٣", "٤", "٥"];
 const STEPS = [
   {
     number: "٠١",
-    title: "اكتب خياراتك",
-    sub: "خيارين أو أكثر، بكلماتك. أو أملِها بصوتك وخلنا نرتبها.",
+    title: "إدخال الخيارات",
+    sub: "خياران أو أكثر، بصياغتك. أو أملِها صوتيًا ويتولى النظام ترتيبها.",
     gradient: "linear-gradient(120deg, var(--accent), var(--grad-c))",
   },
   {
     number: "٠٢",
-    title: "جاوب أسئلة خفيفة",
-    sub: "وقتك، مزاجك، أولوياتك — أسئلة تضبط الميزان قبل الحكم.",
+    title: "التقييم الموزون",
+    sub: "أسئلة تحدّد أوزان المعايير: وقتك، حالتك، أولوياتك.",
     gradient: "linear-gradient(120deg, var(--grad-c), var(--grad-d))",
   },
   {
     number: "٠٣",
-    title: "خذ الترشيح والسبب",
-    sub: "جواب واحد واضح، مع ليش. مو قائمة إيجابيات تحسمها أنت.",
+    title: "التوصية ومسوّغها",
+    sub: "خيار واحد مرجَّح، ومعه أساس الترجيح — لا قائمة إيجابيات تحسمها أنت.",
     gradient: "linear-gradient(120deg, var(--grad-d), var(--grad-e))",
   },
 ];
@@ -130,15 +124,18 @@ function Hero({ onCta }) {
     <section className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 pb-22 pt-14 sm:px-6 sm:pt-18 lg:grid-cols-[7fr_5fr] lg:gap-8">
       <Reveal className="flex flex-col items-start gap-6">
         {/* نصف العنوان بتدرّج المزاج: الجملة تبدأ حبراً وتنتهي لوناً،
-            فيقع الوعد نفسه («تنتهي عندك») في الضوء */}
+            فتقع الغاية نفسها («قرار محسوب») في الضوء لا الحالة */}
         <h1 className="display text-5xl font-bold sm:text-6xl lg:text-[4.5rem]">
-          خلّ الحيرة <br aria-hidden />
-          <span className="grad-text">تنتهي عندك.</span>
+          حوّل التردّد <br aria-hidden />
+          <span className="grad-text">إلى قرار محسوب.</span>
         </h1>
 
+        {/* بلا أرقام مُختلقة: قاعدة المشروع أن الأرقام تُحسب لا تُكتب.
+            وبلا «بعيدًا عن العاطفة» — المزاج مُدخَل يغيّر الأوزان في
+            weightsFor()، فنفيُه على الشاشة ادّعاء يكذّبه المحرّك */}
         <p className="max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-          اكتب خياراتك، جاوب أسئلة خفيفة، وخذ ترشيحًا واضحًا مبنيًا على وقتك
-          ومزاجك وأولوياتك — مع السبب.
+          منظومة تحليل منطقي تُقيّم خياراتك المتباينة بناءً على أوزان وأولويات
+          تحددها بنفسك، لتصل إلى الخيار الأنسب.
         </p>
 
         <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -147,21 +144,27 @@ function Hero({ onCta }) {
             onClick={onCta}
             className="action flex items-center gap-2 rounded-full px-8 py-4 text-lg font-semibold transition-all active:translate-y-px"
           >
-            ابدأ قرارك
+            بدء التحليل المنطقي
             <ArrowLeft size={20} />
           </button>
           <Link
             href="/how"
             className="glass rounded-full border border-line-strong bg-white/50 px-6 py-4 font-medium transition-colors hover:border-ink"
           >
-            كيف يعمل؟
+            منهجية التقييم الموزون
           </Link>
         </div>
       </Reveal>
 
       {/* المعاينة: سؤال زجاجي وحكم حبري يركب على زاويته السفلية.
           الحكم مطلق الموضع، فالحاوية تحجز له فراغاً تحتها حتى ما
-          يبلع شرائح الخيارات */}
+          يبلع شرائح الخيارات.
+
+          والمعاينة تحسم نفسها مرة واحدة عند التحميل بدل ما تُعرض
+          محسومة: «سوشي» يمتلئ حبراً ثم يطلع الحكم. الحبر هو نفسه
+          امتلاء ‎Choice‎ حين يختار المستخدم — فالزائر يشوف القاعدة
+          قبل ما يقرأ عنها. التوقيت في ‎--at‎ لأن ترتيب المشهد يُقرأ
+          هنا دفعة واحدة، لا موزّعاً على أصناف في ملف آخر */}
       <Reveal
         delay={150}
         className="relative mx-auto hidden w-full max-w-sm pb-24 sm:block lg:max-w-none"
@@ -171,29 +174,40 @@ function Hero({ onCta }) {
           className="floaty glass-deep rounded-[1.75rem] border border-line bg-card p-6 pb-10 shadow-[0_30px_60px_-30px_rgb(23_20_15/0.26),inset_0_1px_0_rgb(255_255_255/0.14)]"
           style={{ "--tilt": "2deg" }}
         >
-          <p className="text-2xl font-bold">وين نتعشى الليلة؟</p>
+          <p className="text-2xl font-bold">أين توجّه الميزانية التسويقية؟</p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="rounded-full border border-line-strong px-4 py-1.5 text-sm">
-              برجر
+            <span
+              className="demo-chip rounded-full border border-line-strong px-4 py-1.5 text-sm"
+              style={{ "--at": "600ms" }}
+            >
+              الإعلانات الممولة
             </span>
-            <span className="rounded-full border border-line-strong px-4 py-1.5 text-sm">
-              سوشي
-            </span>
-            <span className="rounded-full border border-line-strong px-4 py-1.5 text-sm">
-              أطبخ بالبيت
+            {/* المختار: أساسه ممتلئ، والحركة تأتيه من الحالة الفارغة */}
+            <span
+              className="demo-chip-picked rounded-full border border-ink bg-ink px-4 py-1.5 text-sm text-on-ink"
+              style={{ "--at": "760ms", "--pick-at": "1440ms" }}
+            >
+              التسويق بالمحتوى
             </span>
           </div>
         </div>
 
         <div
           aria-hidden
-          className="floaty-slow ink-glass on-ink absolute bottom-0 left-2 w-[70%] rounded-[1.5rem] p-5"
-          style={{ "--tilt": "-3deg" }}
+          className="demo-verdict absolute bottom-0 left-2 w-[70%]"
+          style={{ "--at": "1900ms" }}
         >
-          <p className="grad-text-on-ink text-xl font-bold">سوشي.</p>
-          <p className="mt-1 text-sm leading-relaxed text-on-ink-muted">
-            خفيف، يناسب مزاجك الليلة، وما يأخّرك عن نومك.
-          </p>
+          <div
+            className="floaty-slow ink-glass on-ink rounded-[1.5rem] p-5"
+            style={{ "--tilt": "-3deg" }}
+          >
+            <p className="grad-text-on-ink text-xl font-bold">
+              التسويق بالمحتوى.
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-on-ink-muted">
+              عائده أبطأ ظهورًا، لكنه يتراكم ويستمر بعد توقّف الإنفاق.
+            </p>
+          </div>
         </div>
       </Reveal>
     </section>
@@ -340,8 +354,14 @@ function ComposerSection({
           <div className="glass-deep flex flex-col gap-7 bg-card p-6 sm:p-10 lg:p-12">
             <header className="flex flex-col gap-2.5">
               <h2 className="display text-3xl font-bold sm:text-[2.4rem]">
-                وش القرار اللي محتار فيه؟
+                أدخل الخيارات واشرع في التحليل
               </h2>
+              {/* «الخيارين» في المقترح كانت تقفلها على اثنين، والحدّ
+                  الأعلى ‎MAX_OPTIONS = 5‎ — فالصياغة تُبقيها مفتوحة */}
+              <p className="text-sm leading-relaxed text-muted">
+                ضع خياراتك المتاحة، وسيطرح النظام أسئلة تقييمية موزونة لقياس
+                تفوّق أحدها منطقيًا.
+              </p>
             </header>
 
             {/* سطر تحت الكلام لا صندوق حوله — نفس حقول شاشة الدخول،
@@ -501,12 +521,12 @@ function ComposerSection({
                 disabled={!ready}
                 className="action flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-lg font-semibold transition-all active:translate-y-px"
               >
-                احسمها لي
+                نفّذ التحليل
                 <ArrowLeft size={20} />
               </button>
 
-              {/* الحيرة الجماعية أعوص من الفردية — "وين نتعشى" عطّلت
-                  سهرات أكثر من أي قرار فردي. الرابط للقروب والكل يصوت. */}
+              {/* القرار المشترك أعقد من الفردي: تتعدد المعايير بتعدد
+                  أصحابها. الرابط للمجموعة، والتصويت مرجَّح بالوزن. */}
               <button
                 type="button"
                 onClick={onGroup}
@@ -514,13 +534,13 @@ function ComposerSection({
                 className="flex w-full items-center justify-center gap-2 rounded-full border border-line-strong px-6 py-3 font-medium transition-colors hover:border-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <Users size={18} />
-                {groupBusy ? "… نجهز الرابط" : "خلّه جماعي — القروب يصوت"}
+                {groupBusy ? "… يُجهَّز الرابط" : "تحليل جماعي — تصويت مرجَّح"}
               </button>
 
               <p className="text-center text-xs text-muted-soft">
                 {ready
-                  ? "ما نحفظ قرارك إلا إذا طلبت. القرار لك دائمًا."
-                  : hindi(`اكتب ${MIN_OPTIONS} خيارات على الأقل.`)}
+                  ? "لا يُحفظ القرار إلا بطلبك. البيانات ملكك."
+                  : hindi(`أدخل ${MIN_OPTIONS} خيارات على الأقل.`)}
               </p>
             </div>
           </div>
@@ -539,10 +559,10 @@ function ComposerSection({
             {/* فوق المنتصف بقليل — المنتصف الهندسي يبان نازلاً للعين */}
             <div className="my-auto flex flex-col gap-6 lg:-translate-y-4">
               <h3 className="display text-2xl font-bold sm:text-3xl">
-                مو عارف من وين تبدأ؟
+                نماذج جاهزة للتحليل
               </h3>
               <p className="text-sm leading-relaxed text-muted">
-                جرّب واحدة من هذي — تتعبى لك جاهزة وتعدّلها على كيفك:
+                اختر نموذجًا يُعبَّأ تلقائيًا، ثم عدّله بما يناسب حالتك.
               </p>
 
               <div className="flex flex-col gap-1">
@@ -579,7 +599,7 @@ function StepsSection() {
     <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
       <Reveal className="mb-10">
         <h2 className="display text-3xl font-bold sm:text-4xl">
-          ثلاث خطوات وتنحسم.
+          ثلاث مراحل حتى القرار.
         </h2>
       </Reveal>
 
@@ -640,38 +660,38 @@ function FeaturesSection({ onVoiceMode, onCta }) {
   const features = [
     {
       icon: Users,
-      title: "القروب يصوت",
-      sub: "رابط واحد، الكل يصوت من جواله، والنتيجة لحظة بلحظة.",
+      title: "التصويت المرجَّح",
+      sub: "رابط واحد، يصوّت كل طرف من جهازه، وتُحتسب النتيجة لحظيًا.",
       onClick: onCta,
     },
     {
       icon: Scale,
-      title: "قرارات المصير تنفك",
-      sub: "أستقيل؟ أتزوج؟ نفكها لفحوصات صغيرة لها جواب قبل أي حكم.",
+      title: "تفكيك القرارات الكبرى",
+      sub: "القرار المصيري يُجزَّأ إلى فحوص صغيرة لكل منها جواب محدد.",
       onClick: onCta,
     },
     {
       icon: Brain,
-      title: "شخصيتك القرارية",
-      sub: "من سجلك: وش تطرح ولا تختار، ومتى تحتار، ووش تندم عليه.",
+      title: "نمطك في اتخاذ القرار",
+      sub: "قراءة إحصائية لسجلّك: ما تؤجّله، ومتى تتردد، وما تعود عنه.",
       href: "/#history",
     },
     {
       icon: Headphones,
-      title: "محادثة صوتية",
-      sub: "احسم وأنت ماسك قهوتك — تتكلم، وهو يسأل ويحسم.",
+      title: "الجلسة الصوتية",
+      sub: "حوار منطوق: يطرح النظام أسئلة التقييم ويعرض التوصية صوتيًا.",
       onClick: onVoiceMode,
     },
     {
       icon: Clock,
-      title: "خطة اليوم",
-      sub: "يومك كله قرارات؟ رتّبها مرة وحدة وخذ خطة تمشي عليها.",
+      title: "جدولة اليوم",
+      sub: "قرارات اليوم مجتمعة تُرتَّب مرة واحدة في خطة قابلة للتنفيذ.",
       href: "/plan",
     },
     {
       icon: Activity,
       title: "تحليل المخاطر",
-      sub: "وش أسوأ سيناريو فعلاً؟ تحليل هادئ بدل القلق العائم.",
+      sub: "تقدير أسوأ السيناريوهات واحتمالها، بدل قلق غير محدَّد المعالم.",
       href: "/analyze",
     },
   ];
@@ -680,7 +700,7 @@ function FeaturesSection({ onVoiceMode, onCta }) {
     <section className="mx-auto w-full max-w-6xl px-4 py-12 pb-20 sm:px-6">
       <Reveal className="mb-10">
         <h2 className="display text-3xl font-bold sm:text-4xl">
-          كل أنواع الحيرة، لها أداة.
+          لكل نوع من التردد أداة تقابله.
         </h2>
       </Reveal>
 

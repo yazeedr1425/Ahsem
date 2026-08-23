@@ -85,7 +85,7 @@ export default function SettingsPage() {
     } else {
       setStatus({
         ok: false,
-        message: result.message ?? "ما انحفظت — جرب مرة ثانية.",
+        message: result.message ?? "لم يُحفظ. أعد المحاولة.",
       });
     }
   };

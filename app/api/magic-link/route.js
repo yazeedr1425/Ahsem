@@ -150,7 +150,7 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return fail(400, "ما قدرنا نقرأ الطلب.");
+    return fail(400, "تعذّرت قراءة الطلب.");
   }
 
   const email = typeof body?.email === "string" ? body.email.trim() : "";
@@ -186,15 +186,15 @@ export async function POST(request) {
     });
   } catch (err) {
     console.error("[api/magic-link] generateLink threw:", err);
-    return fail(502, "تعذر تجهيز الرابط — جرب مرة ثانية.");
+    return fail(502, "تعذّر تجهيز الرابط. أعد المحاولة.");
   }
 
   if (link.error) {
     if (/not.*found/i.test(link.error.message) || link.error.code === "user_not_found") {
-      return fail(404, "هذا الإيميل مو مسجل عندنا — أنشئ حساباً أول.");
+      return fail(404, "هذا البريد غير مسجّل. أنشئ حسابًا أولًا.");
     }
     console.error("[api/magic-link] generateLink failed:", link.error);
-    return fail(502, "تعذر تجهيز الرابط — جرب مرة ثانية.");
+    return fail(502, "تعذّر تجهيز الرابط. أعد المحاولة.");
   }
 
   const actionLink = link.data?.properties?.action_link;
@@ -224,8 +224,8 @@ export async function POST(request) {
     }
   } catch (err) {
     console.error("[api/magic-link] send failed:", err);
-    if (err.name === "AbortError") return fail(504, "الإرسال تأخر — جرب مرة ثانية.");
-    return fail(502, "ما قدرنا نرسل الرابط — جرب مرة ثانية.");
+    if (err.name === "AbortError") return fail(504, "تأخّر الإرسال. أعد المحاولة.");
+    return fail(502, "تعذّر إرسال الرابط. أعد المحاولة.");
   } finally {
     clearTimeout(timer);
   }

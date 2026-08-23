@@ -38,12 +38,12 @@ export default function VerdictChat({ turns, busy, error, onSend }) {
     <section className="snake card-shadow">
       <div className="glass rounded-[calc(var(--radius-card)-2px)] bg-white/72 p-6">
         <p className="text-base font-semibold">
-          {turns.length ? "كمّل النقاش" : "ما اقتنعت؟"}
+          {turns.length ? "تابع المناقشة" : "غير مقتنع بالتوصية؟"}
         </p>
         <p className="mt-1 text-sm text-muted">
           {turns.length
-            ? "أي شي يخصك ما أعرفه"
-            : "قل لي ليش، وإذا عندك شي يخصك ما أعرفه قله."}
+            ? "أي معطى يخصّك ولم يُؤخذ في الحسبان"
+            : "بيّن سبب اعتراضك، وأضف أي معطى يخصّك لم يدخل في الحساب."}
         </p>
 
         {turns.length > 0 && (

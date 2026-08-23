@@ -210,7 +210,7 @@ export default function VotePage() {
       });
       const payload = await res.json().catch(() => null);
       if (!res.ok || !payload?.ok) {
-        setCloseError(payload?.error ?? "ما قدرنا نقفل التصويت.");
+        setCloseError(payload?.error ?? "تعذّر إقفال التصويت.");
         return;
       }
       setVerdict({ winner: payload.winner, announcement: payload.announcement });
@@ -229,7 +229,7 @@ export default function VotePage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      setVoteError("ما قدرنا ننسخ — انسخ الرابط من شريط العنوان.");
+      setVoteError("تعذّر النسخ. انسخ الرابط من شريط العنوان.");
     }
   };
 
