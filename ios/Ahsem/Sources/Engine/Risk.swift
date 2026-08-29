@@ -92,13 +92,20 @@ enum Risk {
 
         var id: String { path.label }
 
-        var basis: [(String, String)] {
+        /// المدخلات التي بُني عليها الرقم، معروضةً كما هي.
+        struct BasisRow: Identifiable, Hashable {
+            let label: String
+            let value: String
+            var id: String { label }
+        }
+
+        var basis: [BasisRow] {
             [
-                ("احتمال الضرر", Risk.label(path.downside_likelihood)),
-                ("شدة الضرر", Risk.label(path.downside_impact)),
-                ("احتمال المكسب", Risk.label(path.upside_likelihood)),
-                ("حجم المكسب", Risk.label(path.upside_impact)),
-                ("قابلية التراجع", Risk.reversalLabel(path.reversibility)),
+                BasisRow(label: "احتمال الضرر", value: Risk.label(path.downside_likelihood)),
+                BasisRow(label: "شدة الضرر", value: Risk.label(path.downside_impact)),
+                BasisRow(label: "احتمال المكسب", value: Risk.label(path.upside_likelihood)),
+                BasisRow(label: "حجم المكسب", value: Risk.label(path.upside_impact)),
+                BasisRow(label: "قابلية التراجع", value: Risk.reversalLabel(path.reversibility)),
             ]
         }
     }

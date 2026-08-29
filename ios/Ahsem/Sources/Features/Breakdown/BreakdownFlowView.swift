@@ -179,13 +179,13 @@ struct BreakdownFlowView: View {
                             .font(Typo.heading(17))
                             .foregroundStyle(palette.ink)
 
-                        ForEach(Array(verdict.missing.enumerated()), id: \.offset) { _, item in
+                        ForEach(verdict.missing.indices, id: \.self) { index in
                             HStack(alignment: .top, spacing: 10) {
                                 Image(systemName: "circle")
                                     .font(.system(size: 7))
                                     .foregroundStyle(palette.accent)
                                     .padding(.top, 7)
-                                Text(item)
+                                Text(verdict.missing[index])
                                     .font(Typo.body(15))
                                     .foregroundStyle(palette.ink)
                                     .fixedSize(horizontal: false, vertical: true)

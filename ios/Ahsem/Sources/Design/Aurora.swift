@@ -13,13 +13,24 @@ struct AuroraBackground: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var phase: CGFloat = 0
 
+    /// بقعة شفق واحدة. نوعٌ صريح لا tuple: `ForEach` تحتاج معرّفاً، ومسار
+    /// المفتاح لا يدخل عناصر الـ tuple.
+    private struct Blob: Identifiable {
+        let id: Int
+        let x: CGFloat
+        let y: CGFloat
+        let w: CGFloat
+        let h: CGFloat
+        let opacity: Double
+    }
+
     /// مواضع البقع الأربع ثابتة عبر المزاجات: المزاج يبدّل ألوانها فقط، فتبقى
     /// الحركة هي هي ويتغيّر الجو وحده.
-    private let blobs: [(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat, opacity: Double)] = [
-        (0.14, 0.18, 0.62, 0.58, 0.29),
-        (0.86, 0.08, 0.52, 0.52, 0.26),
-        (0.78, 0.72, 0.58, 0.58, 0.24),
-        (0.34, 0.88, 0.44, 0.46, 0.22),
+    private let blobs: [Blob] = [
+        Blob(id: 0, x: 0.14, y: 0.18, w: 0.62, h: 0.58, opacity: 0.29),
+        Blob(id: 1, x: 0.86, y: 0.08, w: 0.52, h: 0.52, opacity: 0.26),
+        Blob(id: 2, x: 0.78, y: 0.72, w: 0.58, h: 0.58, opacity: 0.24),
+        Blob(id: 3, x: 0.34, y: 0.88, w: 0.44, h: 0.46, opacity: 0.22),
     ]
 
     var body: some View {
@@ -30,11 +41,11 @@ struct AuroraBackground: View {
                 palette.background
 
                 ZStack {
-                    ForEach(Array(blobs.enumerated()), id: \.offset) { index, blob in
+                    ForEach(blobs) { blob in
                         RadialGradient(
                             colors: [
-                                palette.mesh[index].opacity(blob.opacity),
-                                palette.mesh[index].opacity(0),
+                                palette.mesh[blob.id].opacity(blob.opacity),
+                                palette.mesh[blob.id].opacity(0),
                             ],
                             center: .center,
                             startRadius: 0,

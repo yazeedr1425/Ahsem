@@ -14,9 +14,13 @@ struct PlanTimeline: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ForEach(Array(stops.enumerated()), id: \.element.id) { index, stop in
+            ForEach(stops) { stop in
+                let index = stops.firstIndex { $0.id == stop.id } ?? 0
+
                 stopCard(stop, index: index)
 
+                // زمن التنقّل يظهر *بين* البطاقتين لا داخل إحداهما: هو ملك
+                // المسافة لا ملك المكان، ووضعه داخل بطاقة يجعل القارئ ينسبه لها.
                 if let leg = stop.travel_to_next, index < stops.count - 1 {
                     travelRow(leg)
                 }

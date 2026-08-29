@@ -108,14 +108,20 @@ enum AnalyzeService {
         let context: String
     }
 
+    struct Agent: Identifiable, Hashable {
+        let id: String
+        let label: String
+        let note: String
+    }
+
     /// أسماء الوكلاء الخمسة بترتيبهم — تُعرض قبل أن يبدأ أولهم، فيرى المستخدم
     /// الطريق كاملاً لا خطوةً معلّقة.
-    static let pipeline: [(id: String, label: String, note: String)] = [
-        ("research", "الباحث", "يجمع الحقائق بلا رأي"),
-        ("swot", "محلل SWOT", "يبني التحليل الرباعي من الحقائق"),
-        ("scenarios", "باني السيناريوهات", "يرسم المسارات وفروعها"),
-        ("critic", "المراجع النقدي", "يراجع التحليل ويكشف الافتراضات الهشّة"),
-        ("synthesis", "المُركِّب", "يخرج بالتوصية وشروطها"),
+    static let pipeline: [Agent] = [
+        Agent(id: "research", label: "الباحث", note: "يجمع الحقائق بلا رأي"),
+        Agent(id: "swot", label: "محلل SWOT", note: "يبني التحليل الرباعي من الحقائق"),
+        Agent(id: "scenarios", label: "باني السيناريوهات", note: "يرسم المسارات وفروعها"),
+        Agent(id: "critic", label: "المراجع النقدي", note: "يراجع التحليل ويكشف الافتراضات الهشّة"),
+        Agent(id: "synthesis", label: "المُركِّب", note: "يخرج بالتوصية وشروطها"),
     ]
 
     /// يبثّ الأحداث سطراً سطراً كما تصل.

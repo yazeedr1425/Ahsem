@@ -110,13 +110,13 @@ struct PathTree: View {
             PaperRule()
 
             // المدخلات التي بُني عليها الرقم — حتى يمكن الاختلاف معه بمعرفة
-            ForEach(scored.basis, id: \.0) { label, value in
+            ForEach(scored.basis) { row in
                 HStack {
-                    Text(label)
+                    Text(row.label)
                         .font(Typo.body(14))
                         .foregroundStyle(palette.muted)
                     Spacer()
-                    Text(value)
+                    Text(row.value)
                         .font(Typo.bodyMedium(14))
                         .foregroundStyle(palette.ink)
                 }

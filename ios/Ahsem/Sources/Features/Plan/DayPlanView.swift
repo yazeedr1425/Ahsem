@@ -54,9 +54,15 @@ struct DayPlanView: View {
 
             GlassCard(padding: 20) {
                 VStack(alignment: .leading, spacing: 20) {
-                    chipRow("الجو", options: PlanService.vibes.map { ($0.id, $0.label) }, selection: $vibe)
-                    chipRow("مع مين", options: PlanService.groups.map { ($0.id, $0.label) }, selection: $group)
-                    chipRow("الميزانية", options: PlanService.budgets.map { ($0.id, $0.label) }, selection: $budget)
+                    chipRow("الجو",
+                            options: PlanService.vibes.map { ChipOption(id: $0.id, label: $0.label) },
+                            selection: $vibe)
+                    chipRow("مع مين",
+                            options: PlanService.groups.map { ChipOption(id: $0.id, label: $0.label) },
+                            selection: $group)
+                    chipRow("الميزانية",
+                            options: PlanService.budgets.map { ChipOption(id: $0.id, label: $0.label) },
+                            selection: $budget)
 
                     VStack(alignment: .leading, spacing: 10) {
                         Text("المدة")
@@ -141,9 +147,14 @@ struct DayPlanView: View {
         }
     }
 
+    private struct ChipOption: Identifiable {
+        let id: String
+        let label: String
+    }
+
     private func chipRow(
         _ title: String,
-        options: [(String, String)],
+        options: [ChipOption],
         selection: Binding<String>
     ) -> some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -153,9 +164,12 @@ struct DayPlanView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(options, id: \.0) { id, label in
-                        ChoiceChip(title: label, isSelected: selection.wrappedValue == id) {
-                            selection.wrappedValue = id
+                    ForEach(options) { option in
+                        ChoiceChip(
+                            title: option.label,
+                            isSelected: selection.wrappedValue == option.id
+                        ) {
+                            selection.wrappedValue = option.id
                         }
                     }
                 }

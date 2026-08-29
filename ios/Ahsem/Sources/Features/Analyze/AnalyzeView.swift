@@ -106,7 +106,7 @@ struct AnalyzeView: View {
             SectionHeading(title: "يشتغل عليها الآن", sub: statement)
 
             VStack(spacing: 0) {
-                ForEach(Array(AnalyzeService.pipeline.enumerated()), id: \.element.id) { _, agent in
+                ForEach(AnalyzeService.pipeline) { agent in
                     agentRow(agent)
                 }
             }
@@ -118,7 +118,7 @@ struct AnalyzeView: View {
         }
     }
 
-    private func agentRow(_ agent: (id: String, label: String, note: String)) -> some View {
+    private func agentRow(_ agent: AnalyzeService.Agent) -> some View {
         let isDone = doneAgents.contains(agent.id)
         let isActive = activeAgent == agent.id
         let wasSkipped = skipped[agent.id] != nil
@@ -269,12 +269,12 @@ struct AnalyzeView: View {
                 .font(Typo.bodySemibold(14))
                 .foregroundStyle(onInk ? palette.onInk : palette.ink)
 
-            ForEach(Array(items.enumerated()), id: \.offset) { _, item in
+            ForEach(items.indices, id: \.self) { index in
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "circle.fill")
                         .font(.system(size: 5))
                         .padding(.top, 7)
-                    Text(item)
+                    Text(items[index])
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .font(Typo.body(14))

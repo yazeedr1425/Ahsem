@@ -10,18 +10,32 @@ struct SwotGrid: View {
 
     @Environment(\.palette) private var palette
 
-    private var quadrants: [(title: String, subtitle: String, points: [AnalyzeService.SwotPoint], icon: String)] {
+    private struct Quadrant: Identifiable {
+        let title: String
+        /// داخلي أم خارجي — ليس زخرفاً: تصنيف حركةِ منافسٍ كـ«ضعف» يُفسد الشبكة كلها.
+        let subtitle: String
+        let points: [AnalyzeService.SwotPoint]
+        let icon: String
+
+        var id: String { title }
+    }
+
+    private var quadrants: [Quadrant] {
         [
-            ("القوة", "مما تملكه", swot.strengths, "arrow.up.circle"),
-            ("الضعف", "مما تملكه", swot.weaknesses, "arrow.down.circle"),
-            ("الفرص", "مما لا تملكه", swot.opportunities, "sparkles"),
-            ("التهديدات", "مما لا تملكه", swot.threats, "exclamationmark.triangle"),
+            Quadrant(title: "القوة", subtitle: "مما تملكه",
+                     points: swot.strengths, icon: "arrow.up.circle"),
+            Quadrant(title: "الضعف", subtitle: "مما تملكه",
+                     points: swot.weaknesses, icon: "arrow.down.circle"),
+            Quadrant(title: "الفرص", subtitle: "مما لا تملكه",
+                     points: swot.opportunities, icon: "sparkles"),
+            Quadrant(title: "التهديدات", subtitle: "مما لا تملكه",
+                     points: swot.threats, icon: "exclamationmark.triangle"),
         ]
     }
 
     var body: some View {
         VStack(spacing: 14) {
-            ForEach(quadrants, id: \.title) { quadrant in
+            ForEach(quadrants) { quadrant in
                 GlassCard(padding: 18) {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack(spacing: 8) {

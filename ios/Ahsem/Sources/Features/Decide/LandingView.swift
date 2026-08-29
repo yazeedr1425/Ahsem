@@ -96,7 +96,9 @@ struct LandingView: View {
 
     private var optionFields: some View {
         VStack(spacing: 14) {
-            ForEach(Array(store.options.enumerated()), id: \.element.id) { index, option in
+            ForEach(store.options) { option in
+                let index = store.options.firstIndex { $0.id == option.id } ?? 0
+
                 HStack(spacing: 12) {
                     Text(ordinals[min(index, ordinals.count - 1)])
                         .font(Typo.bodySemibold(18))

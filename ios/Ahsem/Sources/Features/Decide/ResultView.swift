@@ -1,5 +1,15 @@
 import SwiftUI
 
+/// بطاقة واحدة مما بعد الحكم. سطران فقط، ولكلٍّ منهما وظيفة مختلفة: «وش تخسر»
+/// يبرّر، و«متى ينقلب» يعطي قاعدةً تُستعمل بلا التطبيق.
+struct Aftermath: Identifiable {
+    let title: String
+    let body: String
+    let icon: String
+
+    var id: String { title }
+}
+
 /// الحكم حبري والحساب ورقي — نفس البطاقة الغامقة، لكن بالحجم الكامل: ما شافه
 /// المستخدم وعداً أول ما دخل يشوفه الآن حقيقةً.
 ///
@@ -327,14 +337,18 @@ struct ResultView: View {
     /// ثانية يؤطّره مرتين.
     @ViewBuilder
     private var aftermathCards: some View {
-        let items: [(title: String, body: String, icon: String)] = [
-            recommendation?.costOfSwitching.map { ("وش تخسر لو غيّرت", $0, "scalemass") },
-            recommendation?.flipCondition.map { ("ينقلب القرار لو", $0, "shuffle") },
+        let items: [Aftermath] = [
+            recommendation?.costOfSwitching.map {
+                Aftermath(title: "وش تخسر لو غيّرت", body: $0, icon: "scalemass")
+            },
+            recommendation?.flipCondition.map {
+                Aftermath(title: "ينقلب القرار لو", body: $0, icon: "shuffle")
+            },
         ].compactMap { $0 }
 
         if !items.isEmpty, revised == nil {
             VStack(spacing: 12) {
-                ForEach(items, id: \.title) { item in
+                ForEach(items) { item in
                     GlassCard(padding: 18) {
                         VStack(alignment: .leading, spacing: 6) {
                             Label(item.title, systemImage: item.icon)
