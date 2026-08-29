@@ -89,11 +89,11 @@ struct Revision: Equatable {
         return next
     }
 
-    /// معيارٌ رفعه المستخدم في النقاش يدخل القالب نفسه.
+    /// معيارٌ رفعه المستخدم في النقاش يدخل القالب نفسه، فيقرأه المحرك كأنه من
+    /// الإطار — نفس مبدأ الإطار مع الفئة الثابتة.
     func applied(to category: Category?) -> Category? {
         guard let category, !criteria.isEmpty else { return category }
-        var next = category
-        next = Category(
+        return Category(
             id: category.id,
             label: category.label,
             en: category.en,
@@ -102,7 +102,6 @@ struct Revision: Equatable {
             criteria: category.criteria + criteria,
             questions: category.questions
         )
-        return next
     }
 
     /// الترتيب مقصود: حساب الأوزان يعطي المعيار المضاف وزناً محايداً، ثم تكتب

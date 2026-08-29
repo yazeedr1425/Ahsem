@@ -10,7 +10,7 @@ struct RootView: View {
 
     /// الرابط `ahsem://vote/CODE` يفتح شاشة التصويت مباشرة — الرابط *هو* السر،
     /// فلا يمر بأي وسيط.
-    @State private var pendingVoteCode: String?
+    @State private var pendingVoteCode: VoteCode?
 
     var body: some View {
         ZStack {
@@ -37,11 +37,11 @@ struct RootView: View {
         .onOpenURL { url in
             guard url.scheme == "ahsem", url.host == "vote" else { return }
             let code = url.lastPathComponent
-            if !code.isEmpty { pendingVoteCode = code }
+            if !code.isEmpty { pendingVoteCode = VoteCode(id: code) }
         }
         .sheet(item: $pendingVoteCode) { code in
             NavigationStack {
-                GroupVoteView(code: code)
+                GroupVoteView(code: code.id)
             }
             .environment(\.palette, theme.palette)
             .environment(\.layoutDirection, .rightToLeft)
@@ -68,7 +68,8 @@ struct SplashView: View {
     }
 }
 
-/// `String` كمعرّف صالح لـ `sheet(item:)`.
-extension String: @retroactive Identifiable {
-    public var id: String { self }
+/// كود التصويت ملفوفاً في نوعه: `sheet(item:)` تطلب `Identifiable`، وتمديد
+/// `String` بها يمسّ كل نصٍّ في التطبيق لأجل شاشة واحدة.
+struct VoteCode: Identifiable, Equatable {
+    let id: String
 }

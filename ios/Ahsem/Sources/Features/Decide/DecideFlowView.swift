@@ -98,7 +98,10 @@ struct DecideFlowView: View {
                     case .voice:
                         GlassCard {
                             VoiceModeView(
-                                onCancel: { store.step = .landing }
+                                onCancel: { store.step = .landing },
+                                onComplete: { state in
+                                    Task { await store.applyVoice(state) }
+                                }
                             )
                         }
                     }
@@ -135,7 +138,7 @@ struct DecideFlowView: View {
                 }
             }
             .sheet(item: $store.pendingVoteCode) { code in
-                NavigationStack { GroupVoteView(code: code) }
+                NavigationStack { GroupVoteView(code: code.id) }
                     .environment(\.palette, palette)
                     .environment(\.layoutDirection, .rightToLeft)
             }

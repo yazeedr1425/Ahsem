@@ -58,7 +58,7 @@ final class DecideFlowStore {
     var saveState: SaveState?
     var groupBusy = false
     /// كود التصويت المنشأ حالاً — تفتح عليه الشاشة، والمنشئ يشارك الرابط من هناك.
-    var pendingVoteCode: String?
+    var pendingVoteCode: VoteCode?
     /// إنشاء التصويت يحتاج دخولاً لأن القرار يُملَك؛ الضيوف يصوّتون بلا حسابات.
     var needsSignIn = false
 
@@ -249,10 +249,11 @@ final class DecideFlowStore {
         let built = frame ?? (await buildFrame(key: labels.joined(separator: "|"), labels: labels))
 
         do {
-            pendingVoteCode = try await GroupService.create(
+            let code = try await GroupService.create(
                 categoryId: built?.category ?? "life",
                 options: labels
             )
+            pendingVoteCode = VoteCode(id: code)
         } catch GroupService.GroupError.unauthenticated {
             needsSignIn = true
         } catch {
@@ -362,6 +363,23 @@ final class DecideFlowStore {
         // الحفظ بعد ظهور النتيجة — لا نجعل المستخدم ينتظره
         guard let verdict = recommendation, !verdict.isLocal else { return }
         await save(verdict: verdict, labels: labels, answers: finalAnswers)
+    }
+
+    /// المحادثة الصوتية تعطينا كل شيء دفعة واحدة — بما فيه التقييمات. الوكيل
+    /// يرجّعها مفهرسة بنص الخيار، والمحرك يريدها بمعرّف الخيار.
+    func applyVoice(_ state: AssistService.State) async {
+        let voiceOptions = (state.options ?? []).enumerated().map { index, label in
+            DecisionOption(id: "voice-\(index)", label: label)
+        }
+        guard voiceOptions.count >= ScoreEngine.minOptions else { return }
+
+        framed = nil
+        voiceCategoryId = state.categoryId
+        options = voiceOptions
+        answers = state.answerMap
+        ratings = state.ratingMap(for: voiceOptions)
+
+        await decide()
     }
 
     private func save(
